@@ -12,13 +12,13 @@ gh auth login
 ```
 
 
-####Zainicjowanie nowego lokalnego repozytorium Git z domyślną gałęzią main.
+#### Zainicjowanie nowego lokalnego repozytorium Git z domyślną gałęzią main.
 ```
 git init -b main
 ```
 
 
-####Utworzenie nowego repozytorium na GitHubie o nazwie zadanie2, oraz ustawienie je jako publiczne i dodanie zdalnego repozytorium origin.
+#### Utworzenie nowego repozytorium na GitHubie o nazwie zadanie2, oraz ustawienie je jako publiczne i dodanie zdalnego repozytorium origin.
 ```
 agataogrodnik@MacBook-Pro-Agata ~ % gh repo create
 ? What would you like to do? Push an existing local repository to GitHub
@@ -40,7 +40,7 @@ agatOgr/zadanie2	zadanie2	public	2025-05-29T10:55:55Z
 ```
 
 
-####Dodanie wszystkich plików oraz katalogów projektu z zadania 1
+#### Dodanie wszystkich plików oraz katalogów projektu z zadania 1
 ```
 git add .
 ```
@@ -50,7 +50,7 @@ git commit -m "Inicjalizacja repo zadanie2"
 
 
 
-####Wypchnięcie lokalną gałąź main do zdalnego repozytorium i ustawienie origin/main jako domyślny upstream.
+#### Wypchnięcie lokalną gałąź main do zdalnego repozytorium i ustawienie origin/main jako domyślny upstream.
 ```
  git push -u origin main
 ```
@@ -60,7 +60,6 @@ git commit -m "Inicjalizacja repo zadanie2"
 
 
 
-<<<<<<< HEAD
 <img width="817" alt="image" src="https://github.com/user-attachments/assets/0cc2b547-bc70-409c-956a-ec27fc19a515" />
 
 
