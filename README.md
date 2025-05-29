@@ -55,8 +55,103 @@ git commit -m "Inicjalizacja repo zadanie2"
 
 <img width="815" alt="image" src="https://github.com/user-attachments/assets/c474a21b-177f-44d0-abbd-b884d699d37e" />
 
+```
+name: Build & Push Multi-Arch Docker Image
+# Nazwa workflow, widoczna w GitHub Actions
 
+on:
+  workflow_dispatch:
+  # Pozwala na ręczne uruchomienie workflow z poziomu UI GitHub
+  push:
+    tags:
+      - '*'  
+      # Uruchamia workflow na push do dowolnego taga, np. v1.0.5, v2.0.0 itp.
 
-# dodaj pustą linię
-# dodaj pustą linię
-# dodaj pustą linię
+permissions:
+  contents: read
+  # Uprawnienie do odczytu zawartości repozytorium
+  packages: write
+  # Uprawnienie do zapisu pakietów (np. obrazów w GitHub Container Registry)
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    # Workflow uruchamia się na maszynie z systemem Ubuntu w najnowszej wersji
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v4
+      # Pobiera kod źródłowy repozytorium na maszynę roboczą
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      # Konfiguruje QEMU, potrzebne do emulacji różnych architektur (np. arm64) podczas budowania obrazu
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      # Konfiguruje Docker Buildx, narzędzie pozwalające budować obrazy multi-architekturowe
+
+    - name: DockerHub login
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # Loguje się do DockerHub przy pomocy podanych w secrets danych (do cache i/lub wypychania)
+
+    - name: GitHub Container Registry login
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GHCR_PAT }}
+      # Loguje się do GitHub Container Registry (ghcr.io) z tokenem dostępu (PAT)
+
+    - name: Extract metadata (tags, labels)
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: |
+          ghcr.io/agatogr/zadanie2
+        tags: |
+          type=ref,event=tag
+          type=sha
+      # Generuje metadane (tagi i etykiety) na podstawie referencji git (np. tagu)
+      # type=ref,event=tag - tag z git jako tag obrazu
+      # type=sha - dodatkowy tag sha commita
+
+    - name: Debug metadata (opcjonalne)
+      run: |
+        echo "Tags: ${{ steps.meta.outputs.tags }}"
+        echo "Version: ${{ steps.meta.outputs.version }}"
+      # Wyświetla na konsoli metadane wygenerowane przez poprzedni krok (do debugowania)
+
+    - name: Build & push image (multi-arch)
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        # Kontekst builda - aktualny katalog repozytorium
+        platforms: linux/amd64,linux/arm64
+        # Buduje obrazy dla architektur amd64 i arm64
+        push: true
+        # Po zbudowaniu obraz zostanie wypchnięty do rejestru
+        tags: ghcr.io/agatogr/zadanie2:${{ github.ref_name }}
+        # Tag obrazu - nazwa repozytorium + tag git (np. v1.0.5)
+        labels: ${{ steps.meta.outputs.labels }}
+        # Dodaje etykiety (labels) do obrazu na podstawie metadanych
+        cache-from: type=registry,ref=docker.io/agatog/ci-cache:latest
+        cache-to: type=registry,ref=docker.io/agatog/ci-cache:latest,mode=max
+        # Używa cache builda z repozytorium docker.io dla przyspieszenia kolejnych buildów
+
+    - name: Scan image for CVEs using Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ghcr.io/agatogr/zadanie2:${{ github.ref_name }}
+        format: table
+        severity: CRITICAL,HIGH
+        exit-code: 1
+      # Skanuje zbudowany obraz pod kątem podatności (CVE) za pomocą Trivy
+      # Wypisuje wynik w formacie tabeli
+      # Ustawia poziom poważnych podatności do CRITICAL i HIGH
+      # Zwraca błąd (exit code 1), jeśli wykryje podatności o tym poziomie lub wyższym
+
+```
