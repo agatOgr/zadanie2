@@ -58,8 +58,8 @@ git commit -m "Inicjalizacja repo zadanie2"
 
 
 ```
-git tag v1.0.7  
-git push origin v1.0.7
+git tag v1.0.2  
+git push origin v1.0.2
 ```
 
 ```
@@ -112,6 +112,7 @@ Triggered via push about 3 hours ago
 
 ```
 
+<img width="1219" alt="image" src="https://github.com/user-attachments/assets/6f14bde0-8057-49f5-8403-7b9286cc8fad" />
 
 
 
