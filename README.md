@@ -1,6 +1,11 @@
+# Zadanie 2
+
+
+W ramach zadania skonfigurowano workflow GitHub Actions, który automatycznie buduje i publikuje obraz Dockera do GHCR po wypchnięciu tagu do repozytorium. Proces obejmuje checkout kodu, konfigurację Buildx i QEMU dla wsparcia wielu architektur (amd64 i arm64), logowanie do rejestrów, budowanie obrazu na podstawie dwustopniowego Dockerfile oraz jego wysyłkę. Obraz jest dodatkowo skanowany pod kątem krytycznych i wysokich podatności za pomocą Trivy. Zastosowano również mechanizm cache, który publikuje dane do repozytorium na DockerHub, co przyspiesza kolejne buildy.
+
+## Wykonane c
 
 ```
-
 gh auth login
 
 ```
