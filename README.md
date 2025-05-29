@@ -42,14 +42,11 @@ git add .
 git commit -m "Inicjalizacja repo zadanie2"
 ```
 
-
-<img width="1081" alt="image" src="https://github.com/user-attachments/assets/3f194af6-4125-415d-b645-314187fd3da7" />
-
-
-
 ```
  git push -u origin main
 ```
+
+
 
 
 
@@ -57,9 +54,63 @@ git commit -m "Inicjalizacja repo zadanie2"
 
 
 
+```
+git tag v1.0.7  
+git push origin v1.0.7
+```
 
+```
+agataogrodnik@MacBook-Pro-Agata zadanie2 % gh workflow list             
+NAME                                  STATE   ID       
+Build & Push Multi-Arch Docker Image  active  165023368
+```
+
+```
+agataogrodnik@MacBook-Pro-Agata zadanie2 % gh run view                            
+? Select a workflow run ✓ Build & Push Multi-Arch Docker Image, Build & Push Multi-Arch Docker Image [v1.0.7] 3h42m40s ago
+
+✓ v1.0.7 Build & Push Multi-Arch Docker Image · 15326236155
+Triggered via push about 3 hours ago
+
+JOBS
+✓ build-and-push in 45s (ID 43121351557)
+
+For more information about the job, try: gh run view --job=43121351557
+View this run on GitHub: https://github.com/agatOgr/zadanie2/actions/runs/15326236155
+agataogrodnik@MacBook-Pro-Agata zadanie2 % 
+```
+
+```
+
+agataogrodnik@MacBook-Pro-Agata zadanie2 % gh run view --job=43121351557
+
+✓ v1.0.7 Build & Push Multi-Arch Docker Image · 15326236155
+Triggered via push about 3 hours ago
+
+✓ build-and-push in 45s (ID 43121351557)
+  ✓ Set up job
+  ✓ Checkout source code
+  ✓ Set up QEMU
+  ✓ Set up Docker Buildx
+  ✓ DockerHub login
+  ✓ GitHub Container Registry login
+  ✓ Extract metadata (tags, labels)
+  ✓ Debug metadata (opcjonalne)
+  ✓ Build & push image (multi-arch)
+  ✓ Scan image for CVEs using Trivy
+  ✓ Post Scan image for CVEs using Trivy
+  ✓ Post Build & push image (multi-arch)
+  ✓ Post GitHub Container Registry login
+  ✓ Post DockerHub login
+  ✓ Post Set up Docker Buildx
+  ✓ Post Set up QEMU
+  ✓ Post Checkout source code
+  ✓ Complete job
+
+```
 
 ![Uploading image.png…]()
+
 
 
 ```
