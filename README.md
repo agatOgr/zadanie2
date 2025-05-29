@@ -43,6 +43,10 @@ git commit -m "Inicjalizacja repo zadanie2"
 ```
 
 
+<img width="1081" alt="image" src="https://github.com/user-attachments/assets/3f194af6-4125-415d-b645-314187fd3da7" />
+
+
+
 ```
  git push -u origin main
 ```
