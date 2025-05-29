@@ -38,7 +38,7 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: |
-          ghcr.io/agatOgr/zadanie2
+          ghcr.io/agatogr/zadanie2
         tags: |
           type=semver,pattern={{version}}
           type=sha
