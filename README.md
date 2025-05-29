@@ -51,6 +51,7 @@ git commit -m "Inicjalizacja repo zadanie2"
 
 
 
+<<<<<<< HEAD
 <img width="817" alt="image" src="https://github.com/user-attachments/assets/0cc2b547-bc70-409c-956a-ec27fc19a515" />
 
 
@@ -215,3 +216,10 @@ jobs:
       # Zwraca błąd (exit code 1), jeśli wykryje podatności o tym poziomie lub wyższym
 
 ```
+=======
+# dodaj pustą linię
+# dodaj pustą linię
+# dodaj pustą linię
+# dodaj pustą linię
+>>>>>>> f7b93b9 (Build & Push Multi-Arch Docker Image)
+# dodaj pustą linię
