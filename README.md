@@ -5,7 +5,7 @@ W ramach zadania skonfigurowano workflow GitHub Actions, który automatycznie bu
 
 ## Przebieg zadania
 
-####Logowanie do GitHub CLI, w celu uzyskania dostępu do operacji na GitHubie z terminala.
+#### Logowanie do GitHub CLI, w celu uzyskania dostępu do operacji na GitHubie z terminala.
 
 ```
 gh auth login
