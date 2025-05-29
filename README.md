@@ -1,0 +1,50 @@
+
+```
+
+gh auth login
+
+```
+```
+
+git init -b main
+
+```
+
+```
+
+agataogrodnik@MacBook-Pro-Agata ~ % gh repo create
+? What would you like to do? Push an existing local repository to GitHub
+? Path to local repository .
+? Repository name zadanie2
+? Description zadanie2
+? Visibility Public
+✓ Created repository agatOgr/zadanie2 on GitHub
+  https://github.com/agatOgr/zadanie2
+? Add a remote? Yes
+? What should the new remote be called? origin
+✓ Added remote https://github.com/agatOgr/zadanie2.git
+```
+
+```
+
+agataogrodnik@MacBook-Pro-Agata ~ % gh repo list | grep zadanie2
+agatOgr/zadanie2	zadanie2	public	2025-05-29T10:55:55Z
+
+```
+
+
+```
+git add .
+
+```
+
+```
+git commit -m "Inicjalizacja repo zadanie2"
+```
+
+
+```
+ git push -u origin main
+```
+
+
