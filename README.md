@@ -58,3 +58,4 @@ git commit -m "Inicjalizacja repo zadanie2"
 
 
 # dodaj pustą linię
+# dodaj pustą linię
