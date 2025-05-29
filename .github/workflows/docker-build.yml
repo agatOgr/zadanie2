@@ -60,8 +60,8 @@ jobs:
         push: true
         tags: ghcr.io/agatogr/zadanie2:${{ github.ref_name }}
         labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=registry,ref=docker.io/agatog/ci-cache:latest
-        cache-to: type=registry,ref=docker.io/agatog/ci-cache:latest,mode=max
+        cache-from: type=registry,ref=docker.io/agatog/ci-cache:${{ github.ref_name }}
+        cache-to: type=registry,ref=docker.io/agatog/ci-cache:${{ github.ref_name }},mode=max
 
     - name: Scan image for CVEs using Trivy
       uses: aquasecurity/trivy-action@master
