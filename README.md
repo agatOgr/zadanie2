@@ -52,3 +52,8 @@ git commit -m "Inicjalizacja repo zadanie2"
 ```
 
 
+
+<img width="815" alt="image" src="https://github.com/user-attachments/assets/c474a21b-177f-44d0-abbd-b884d699d37e" />
+
+
+
