@@ -3,20 +3,23 @@
 
 W ramach zadania skonfigurowano workflow GitHub Actions, który automatycznie buduje i publikuje obraz Dockera do GHCR po wypchnięciu tagu do repozytorium. Proces obejmuje checkout kodu, konfigurację Buildx i QEMU dla wsparcia wielu architektur (amd64 i arm64), logowanie do rejestrów, budowanie obrazu na podstawie dwustopniowego Dockerfile oraz jego wysyłkę. Obraz jest dodatkowo skanowany pod kątem krytycznych i wysokich podatności za pomocą Trivy. Zastosowano również mechanizm cache, który publikuje dane do repozytorium na DockerHub, co przyspiesza kolejne buildy.
 
-## Wykonane c
+## Przebieg zadania
+
+####Logowanie do GitHub CLI, w celu uzyskania dostępu do operacji na GitHubie z terminala.
 
 ```
 gh auth login
-
-```
 ```
 
+
+####Zainicjowanie nowego lokalnego repozytorium Git z domyślną gałęzią main.
+```
 git init -b main
-
 ```
 
-```
 
+####Utworzenie nowego repozytorium na GitHubie o nazwie zadanie2, oraz ustawienie je jako publiczne i dodanie zdalnego repozytorium origin.
+```
 agataogrodnik@MacBook-Pro-Agata ~ % gh repo create
 ? What would you like to do? Push an existing local repository to GitHub
 ? Path to local repository .
@@ -30,23 +33,24 @@ agataogrodnik@MacBook-Pro-Agata ~ % gh repo create
 ✓ Added remote https://github.com/agatOgr/zadanie2.git
 ```
 
-```
 
+```
 agataogrodnik@MacBook-Pro-Agata ~ % gh repo list | grep zadanie2
 agatOgr/zadanie2	zadanie2	public	2025-05-29T10:55:55Z
-
 ```
 
 
+####Dodanie wszystkich plików oraz katalogów projektu z zadania 1
 ```
 git add .
-
 ```
-
 ```
 git commit -m "Inicjalizacja repo zadanie2"
 ```
 
+
+
+####Wypchnięcie lokalną gałąź main do zdalnego repozytorium i ustawienie origin/main jako domyślny upstream.
 ```
  git push -u origin main
 ```
