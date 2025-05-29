@@ -47,10 +47,12 @@ git commit -m "Inicjalizacja repo zadanie2"
 ```
 
 
+<img width="1192" alt="image" src="https://github.com/user-attachments/assets/db3414de-14b1-460f-9d1d-77da84a737ad" />
 
 
 
-<img width="815" alt="image" src="https://github.com/user-attachments/assets/c474a21b-177f-44d0-abbd-b884d699d37e" />
+<img width="817" alt="image" src="https://github.com/user-attachments/assets/0cc2b547-bc70-409c-956a-ec27fc19a515" />
+
 
 
 
@@ -109,7 +111,7 @@ Triggered via push about 3 hours ago
 
 ```
 
-![Uploading image.png…]()
+
 
 
 
