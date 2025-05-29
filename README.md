@@ -56,6 +56,7 @@ git commit -m "Inicjalizacja repo zadanie2"
 ```
 
 
+#### Wygenerowanie tokena dostępu w Dockerhub
 <img width="1192" alt="image" src="https://github.com/user-attachments/assets/db3414de-14b1-460f-9d1d-77da84a737ad" />
 
 
