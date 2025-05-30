@@ -3,13 +3,13 @@
 
 W ramach tego zadania skonfigurowałam pełen proces CI/CD, który umożliwia automatyczne budowanie, skanowanie i publikowanie wieloarchitekturowego obrazu Dockera do GitHub Container Registry (GHCR). Cały proces uruchamiany jest automatycznie w momencie wypchnięcia tagu do repozytorium. Workflow został przygotowany w oparciu o GitHub Actions i wspiera zarówno architekturę amd64, jak i arm64.
 
-## Przebieg zadania
+# Przebieg zadania
 
-#### Inicjalizacja repozytorium
+## Inicjalizacja repozytorium
 
 Na początku utworzyłam nowe repozytorium publiczne i połączyłam je z lokalnym repozytorium jako zdalny origin. Do nowo utworzonego repozytorium dodałam wszystkie pliki z poprzedniego zadania. Następnie zatwierdziłam je (git commit) i wypchnęłam (git push) do zdalnego repozytorium. Dzięki temu wszystkie potrzebne pliki – w tym Dockerfile i plik workflow – znalazły się w repozytorium zadanie2.
 
-#### Uwierzytelnianie zewnętrznych rejestrów (DockerHub i GHCR)
+## Uwierzytelnianie zewnętrznych rejestrów (DockerHub i GHCR)
 
 Aby workflow mógł logować się do DockerHub i GitHub Container Registry, wygenerowałam osobne tokeny dostępu: Token do DockerHub, który pozwala na logowanie i dostęp do mechanizmu cache. Personal Access Token (PAT) do GitHub, z uprawnieniami do publikowania obrazów do GHCR. Te dane zostały zapisane jako sekrety w GitHubie, co umożliwia bezpieczne ich wykorzystanie w ramach workflow bez umieszczania ich bezpośrednio w kodzie.
 
@@ -18,7 +18,7 @@ Aby workflow mógł logować się do DockerHub i GitHub Container Registry, wyge
 <img width="817" alt="image" src="https://github.com/user-attachments/assets/0cc2b547-bc70-409c-956a-ec27fc19a515" />
 
 
-#### Konfiguracja pliku workflow
+## Konfiguracja pliku workflow
 
 W repozytorium utworzyłam plik docker-build.yml, który definiuje cały proces automatyzacji. Workflow ten uruchamiany jest w dwóch przypadkach: ręcznie (z poziomu interfejsu GitHub – workflow_dispatch), automatycznie, gdy do repozytorium zostaje wypchnięty nowy tag Git (np. v1.0.2).
 
@@ -36,11 +36,11 @@ Obraz publikowany jest do ghcr.io.
 Skanowanie bezpieczeństwa za pomocą Trivy:
 Obraz jest analizowany pod kątem podatności typu HIGH i CRITICAL. W przypadku wykrycia takich podatności workflow kończy się błędem, aby nie wypuszczać niebezpiecznego obrazu.
 
-#### Wypchnięcie tagu i uruchomienie workflow
+## Wypchnięcie tagu i uruchomienie workflow
 Aby uruchomić workflow, utworzyłam nowy tag Git (v1.0.2) i wypchnęłam go do repozytorium. GitHub Actions automatycznie wykrył nowy tag i rozpoczął wykonywanie zdefiniowanego workflow.
 
 
-#### Weryfikacja działania workflow
+## Weryfikacja działania workflow
 
 Korzystając z poleceń gh workflow list oraz gh run view, mogłam podejrzeć wszystkie uruchomienia workflow oraz szczegóły danego przebiegu. Wszystkie kroki zostały wykonane poprawnie, co potwierdziło, że konfiguracja została przeprowadzona prawidłowo.
 
