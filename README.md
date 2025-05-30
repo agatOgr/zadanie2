@@ -1,209 +1,48 @@
-# Zadanie 2
+# Opis przebiegu zadania 2: Budowanie i publikacja obrazu Dockera za pomocą GitHub Actions
 
 
-W ramach zadania skonfigurowano workflow GitHub Actions, który automatycznie buduje i publikuje obraz Dockera do GHCR po wypchnięciu tagu do repozytorium. Proces obejmuje checkout kodu, konfigurację Buildx i QEMU dla wsparcia wielu architektur (amd64 i arm64), logowanie do rejestrów, budowanie obrazu na podstawie dwustopniowego Dockerfile oraz jego wysyłkę. Obraz jest dodatkowo skanowany pod kątem krytycznych i wysokich podatności za pomocą Trivy. Zastosowano również mechanizm cache, który publikuje dane do repozytorium na DockerHub, co przyspiesza kolejne buildy.
+W ramach tego zadania skonfigurowałam pełen proces CI/CD, który umożliwia automatyczne budowanie, skanowanie i publikowanie wieloarchitekturowego obrazu Dockera do GitHub Container Registry (GHCR). Cały proces uruchamiany jest automatycznie w momencie wypchnięcia tagu do repozytorium. Workflow został przygotowany w oparciu o GitHub Actions i wspiera zarówno architekturę amd64, jak i arm64.
 
 ## Przebieg zadania
 
-#### Logowanie do GitHub CLI, w celu uzyskania dostępu do operacji na GitHubie z terminala.
+#### Inicjalizacja repozytorium
 
-```
-gh auth login
-```
+Na początku utworzyłam nowe repozytorium publiczne i połączyłam je z lokalnym repozytorium jako zdalny origin. Do nowo utworzonego repozytorium dodałam wszystkie pliki z poprzedniego zadania. Następnie zatwierdziłam je (git commit) i wypchnęłam (git push) do zdalnego repozytorium. Dzięki temu wszystkie potrzebne pliki – w tym Dockerfile i plik workflow – znalazły się w repozytorium zadanie2.
 
+#### Uwierzytelnianie zewnętrznych rejestrów (DockerHub i GHCR)
 
-#### Zainicjowanie nowego lokalnego repozytorium Git z domyślną gałęzią main.
-```
-git init -b main
-```
+Aby workflow mógł logować się do DockerHub i GitHub Container Registry, wygenerowałam osobne tokeny dostępu: Token do DockerHub, który pozwala na logowanie i dostęp do mechanizmu cache. Personal Access Token (PAT) do GitHub, z uprawnieniami do publikowania obrazów do GHCR. Te dane zostały zapisane jako sekrety w GitHubie, co umożliwia bezpieczne ich wykorzystanie w ramach workflow bez umieszczania ich bezpośrednio w kodzie.
 
-
-#### Utworzenie nowego repozytorium na GitHubie o nazwie zadanie2, oraz ustawienie je jako publiczne i dodanie zdalnego repozytorium origin.
-```
-agataogrodnik@MacBook-Pro-Agata ~ % gh repo create
-? What would you like to do? Push an existing local repository to GitHub
-? Path to local repository .
-? Repository name zadanie2
-? Description zadanie2
-? Visibility Public
-✓ Created repository agatOgr/zadanie2 on GitHub
-  https://github.com/agatOgr/zadanie2
-? Add a remote? Yes
-? What should the new remote be called? origin
-✓ Added remote https://github.com/agatOgr/zadanie2.git
-```
-
-
-```
-agataogrodnik@MacBook-Pro-Agata ~ % gh repo list | grep zadanie2
-agatOgr/zadanie2	zadanie2	public	2025-05-29T10:55:55Z
-```
-
-
-#### Dodanie wszystkich plików oraz katalogów projektu z zadania 1
-```
-git add .
-```
-```
-git commit -m "Inicjalizacja repo zadanie2"
-```
-
-
-
-#### Wypchnięcie lokalną gałąź main do zdalnego repozytorium i ustawienie origin/main jako domyślny upstream.
-```
- git push -u origin main
-```
-
-
-#### Wygenerowanie tokena dostępu w Dockerhub
 <img width="1192" alt="image" src="https://github.com/user-attachments/assets/db3414de-14b1-460f-9d1d-77da84a737ad" />
 
-
-#### Utworzenie secret-ów w interfejsie web Github
 <img width="817" alt="image" src="https://github.com/user-attachments/assets/0cc2b547-bc70-409c-956a-ec27fc19a515" />
 
 
-### Plik docker-build.yml
-```
-name: Build & Push Multi-Arch Docker Image
-# Nazwa workflow, widoczna w GitHub Actions
+#### Konfiguracja pliku workflow
 
-on:
-  workflow_dispatch:
-  # Pozwala na ręczne uruchomienie workflow z poziomu UI GitHub
-  push:
-    tags:
-      - '*'  
-      # Uruchamia workflow na push do dowolnego taga, np. v1.0.5, v2.0.0 itp.
+W repozytorium utworzyłam plik docker-build.yml, który definiuje cały proces automatyzacji. Workflow ten uruchamiany jest w dwóch przypadkach: ręcznie (z poziomu interfejsu GitHub – workflow_dispatch), automatycznie, gdy do repozytorium zostaje wypchnięty nowy tag Git (np. v1.0.2).
 
-permissions:
-  contents: read
-  # Uprawnienie do odczytu zawartości repozytorium
-  packages: write
-  # Uprawnienie do zapisu pakietów (np. obrazów w GitHub Container Registry)
+Główne działania w workflow:
+Checkout kodu źródłowego – pobiera aktualny kod repozytorium.
+Konfiguracja QEMU – umożliwia emulację wielu architektur systemowych.
+Konfiguracja Docker Buildx – umożliwia budowanie wieloarchitekturowych obrazów.
+Logowanie do DockerHub i GHCR – przy użyciu wcześniej utworzonych sekretów.
+Generowanie metadanych i tagów obrazu – na podstawie tagu Git i SHA commita.
+Budowanie i publikowanie obrazu Dockera:
+Obraz budowany jest dla amd64 i arm64,
+Wykorzystany jest cache (ci-cache) z DockerHub, co znacznie przyspiesza kolejne budowania,
+Obraz publikowany jest do ghcr.io.
+Skanowanie bezpieczeństwa za pomocą Trivy:
+Obraz jest analizowany pod kątem podatności typu HIGH i CRITICAL. W przypadku wykrycia takich podatności workflow kończy się błędem, aby nie wypuszczać niebezpiecznego obrazu.
 
-jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-    # Workflow uruchamia się na maszynie z systemem Ubuntu w najnowszej wersji
-
-    steps:
-    - name: Checkout source code
-      uses: actions/checkout@v4
-      # Pobiera kod źródłowy repozytorium na maszynę roboczą
-
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
-      # Konfiguruje QEMU, potrzebne do emulacji różnych architektur (np. arm64) podczas budowania obrazu
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-      # Konfiguruje Docker Buildx, narzędzie pozwalające budować obrazy multi-architekturowe
-
-    - name: DockerHub login
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-      # Loguje się do DockerHub przy pomocy podanych w secrets danych (do cache i/lub wypychania)
-
-    - name: GitHub Container Registry login
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GHCR_PAT }}
-      # Loguje się do GitHub Container Registry (ghcr.io) z tokenem dostępu (PAT)
-
-    - name: Extract metadata (tags, labels)
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: |
-          ghcr.io/agatogr/zadanie2
-        tags: |
-          type=ref,event=tag
-          type=sha
-      # Generuje metadane (tagi i etykiety) na podstawie referencji git (np. tagu)
-      # type=ref,event=tag - tag z git jako tag obrazu
-      # type=sha - dodatkowy tag sha commita
-
-    - name: Debug metadata (opcjonalne)
-      run: |
-        echo "Tags: ${{ steps.meta.outputs.tags }}"
-        echo "Version: ${{ steps.meta.outputs.version }}"
-      # Wyświetla na konsoli metadane wygenerowane przez poprzedni krok (do debugowania)
-
-    - name: Build & push image (multi-arch)
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        # Kontekst builda - aktualny katalog repozytorium
-        platforms: linux/amd64,linux/arm64
-        # Buduje obrazy dla architektur amd64 i arm64
-        push: true
-        # Po zbudowaniu obraz zostanie wypchnięty do rejestru
-        tags: ghcr.io/agatogr/zadanie2:${{ github.ref_name }}
-        # Tag obrazu - nazwa repozytorium + tag git (np. v1.0.5)
-        labels: ${{ steps.meta.outputs.labels }}
-        # Dodaje etykiety (labels) do obrazu na podstawie metadanych
-        cache-from: type=registry,ref=docker.io/agatog/ci-cache:latest
-        cache-to: type=registry,ref=docker.io/agatog/ci-cache:latest,mode=max
-        # Używa cache builda z repozytorium docker.io dla przyspieszenia kolejnych buildów
-
-    - name: Scan image for CVEs using Trivy
-      uses: aquasecurity/trivy-action@master
-      with:
-        image-ref: ghcr.io/agatogr/zadanie2:${{ github.ref_name }}
-        format: table
-        severity: CRITICAL,HIGH
-        exit-code: 1
-      # Skanuje zbudowany obraz pod kątem podatności (CVE) za pomocą Trivy
-      # Wypisuje wynik w formacie tabeli
-      # Ustawia poziom poważnych podatności do CRITICAL i HIGH
-      # Zwraca błąd (exit code 1), jeśli wykryje podatności o tym poziomie lub wyższym
-
-```
+#### Wypchnięcie tagu i uruchomienie workflow
+Aby uruchomić workflow, utworzyłam nowy tag Git (v1.0.2) i wypchnęłam go do repozytorium. GitHub Actions automatycznie wykrył nowy tag i rozpoczął wykonywanie zdefiniowanego workflow.
 
 
+#### Weryfikacja działania workflow
 
-#### Utworzenie oraz wypchnięcie tagu do zdalnego repozytorium, co wywołało uruchomienie workflow
+Korzystając z poleceń gh workflow list oraz gh run view, mogłam podejrzeć wszystkie uruchomienia workflow oraz szczegóły danego przebiegu. Wszystkie kroki zostały wykonane poprawnie, co potwierdziło, że konfiguracja została przeprowadzona prawidłowo.
 
-```
-git tag v1.0.2  
-git push origin v1.0.2
-```
-
-
-
-#### Wyświetlenie dostępnych workflow w repozytorium
-```
-agataogrodnik@MacBook-Pro-Agata zadanie2 % gh workflow list             
-NAME                                  STATE   ID       
-Build & Push Multi-Arch Docker Image  active  165023368
-```
-
-#### Szczegóły ostatniego uruchomienia workflow wywołanego przez push tagu.
-
-```
-agataogrodnik@MacBook-Pro-Agata zadanie2 % gh run view                            
-? Select a workflow run ✓ Build & Push Multi-Arch Docker Image, Build & Push Multi-Arch Docker Image [v1.0.7] 3h42m40s ago
-
-✓ v1.0.7 Build & Push Multi-Arch Docker Image · 15326236155
-Triggered via push about 3 hours ago
-
-JOBS
-✓ build-and-push in 45s (ID 43121351557)
-
-For more information about the job, try: gh run view --job=43121351557
-View this run on GitHub: https://github.com/agatOgr/zadanie2/actions/runs/15326236155
-```
-
-
-
-
-#### Wyświetlietlenie szczegółów konkretnego zadania workflow, oraz zobaczenien jakie kroki zostały wykonane i ich statusy.
 ```
 
 agataogrodnik@MacBook-Pro-Agata zadanie2 % gh run view --job=43121351557
@@ -233,13 +72,11 @@ Triggered via push about 3 hours ago
 
 ```
 
+#### Weryfikacja utworzenia obrazu Dockera
 
-#### Potwierdzenie utworzenia obrazu na w ropozytorium Dockerhub 
+Na zakończenie potwierdziłam, że nowy obraz Dockera został z powodzeniem opublikowany do GitHub Container Registry, a cache został zaktualizowany na DockerHub.
+
 <img width="1219" alt="image" src="https://github.com/user-attachments/assets/6f14bde0-8057-49f5-8403-7b9286cc8fad" />
 
-
-
-
-
-
+  https://hub.docker.com/repository/docker/agatog/ci-cache/general
 
