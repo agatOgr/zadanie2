@@ -73,11 +73,13 @@ Triggered via push about 3 hours ago
 
 ```
 
-#### Weryfikacja utworzenia obrazu Dockera
+## Weryfikacja utworzenia obrazu Dockera
 
 Na zakończenie potwierdziłam, że nowy obraz Dockera został z powodzeniem opublikowany do GitHub Container Registry, a cache został zaktualizowany na DockerHub.
 
 <img width="1219" alt="image" src="https://github.com/user-attachments/assets/6f14bde0-8057-49f5-8403-7b9286cc8fad" />
+
+### Link do Dockerhub
 
   https://hub.docker.com/repository/docker/agatog/ci-cache/general
 
