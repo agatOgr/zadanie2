@@ -23,6 +23,7 @@ Aby workflow mógł logować się do DockerHub i GitHub Container Registry, wyge
 W repozytorium utworzyłam plik docker-build.yml, który definiuje cały proces automatyzacji. Workflow ten uruchamiany jest w dwóch przypadkach: ręcznie (z poziomu interfejsu GitHub – workflow_dispatch), automatycznie, gdy do repozytorium zostaje wypchnięty nowy tag Git (np. v1.0.2).
 
 Główne działania w workflow:
+
 Checkout kodu źródłowego – pobiera aktualny kod repozytorium.
 Konfiguracja QEMU – umożliwia emulację wielu architektur systemowych.
 Konfiguracja Docker Buildx – umożliwia budowanie wieloarchitekturowych obrazów.
